@@ -30,7 +30,10 @@ url_get_maxretries = 5 * howmanyfetches
 
 
 minsleep = 1500
-maxsleep = 4000
+maxsleep = 2000
+
+minsleep_get_url = 1500
+maxsleep_get_url = 3500
 
 def checkifempty_url(url):
     # Define regular expression pattern
@@ -69,10 +72,11 @@ import asyncio
 from bs4 import BeautifulSoup
 
 async def url_get(url):
-    async with aiohttp.ClientSession() as session:
-        while True:
-            delay = random.randint(minsleep, maxsleep) / 1000.0 
-            await asyncio.sleep(delay)  
+    while True:        
+        delay = random.randint(minsleep_get_url, maxsleep_get_url) / 1000.0 
+        print(f'Sleeping {delay}')
+        await asyncio.sleep(delay)  
+        async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status == 200:
                     return await response.read()

@@ -65,9 +65,12 @@ _catdir  = "cat"
 _postsdir = "posts"
 _usersdir = "users"
 
-
 minsleep = 1500
-maxsleep = 4000
+maxsleep = 2000
+
+
+minsleep_get_url = 1500
+maxsleep_get_url = 3500
 
 http_headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
@@ -377,7 +380,8 @@ async def fetch(session, url):
     retry = 0
     async with aiohttp.ClientSession() as session:
         while retry < url_get_maxretries_nu:
-            delay = random.randint(minsleep, maxsleep) / 1000.0 
+            delay = random.randint(minsleep_get_url, maxsleep_get_url) / 1000.0 
+            print(f'Sleeping {delay}')
             await asyncio.sleep(delay)  
             # Make 5 requests at the same time
             responses = await asyncio.gather(*[session.get(url) for _ in range(howmanyfetches)])
