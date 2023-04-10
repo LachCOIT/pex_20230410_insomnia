@@ -292,9 +292,9 @@ async def pex_fetch_allpages(url,i=1):
     pex_page_id_noid= await get_pex_fileid(url,True)
     total_pages = int(await pex_get_pagenum(url))
     has_downloaded = False
-
     if has_downloaded is False:
         await  pex_fetch_somepages(url,i,total_pages)
+
 async def pex_fetch_somepages(url,i=1,to=0):
     pex_fileid = await get_pex_fileid(url)
     base_url = pex_remove_page_string(url)
@@ -415,20 +415,20 @@ async def __main_dl__():
 
 mustforcedl = True
 mustforce200 = True
+_create_dirs()
 if __name__ == "__main__":
-    _create_dirs()
     if sys.argv[1] == "dlpost":
         # asyncio.run(__main_dl__)
         # await __main_dl__()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(__main_dl__())
-    if sys.argv[1] == "dlpost_force":
+    elif sys.argv[1] == "dlpost_force":
         mustforcedl = True
         # asyncio.run(__main_dl__)
         # await __main_dl__()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(__main_dl__())
-    if sys.argv[1] == "dlpost_force200":
+    elif sys.argv[1] == "dlpost_force200":
         mustforcedl = True
         mustforce200 = True
         print("INIT PEX_09")
