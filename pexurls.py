@@ -28,6 +28,10 @@ semaphore_num = 5
 #url_get_maxretries = 10 * howmanyfetches
 url_get_maxretries = 5 * howmanyfetches
 
+
+minsleep = 1500
+maxsleep = 4000
+
 def checkifempty_url(url):
     # Define regular expression pattern
     pattern = r'^((http(s)?://)?(www.)?pinoyexchange.com/)?discussion/(\d+)(/)?$'
@@ -67,7 +71,7 @@ from bs4 import BeautifulSoup
 async def url_get(url):
     async with aiohttp.ClientSession() as session:
         while True:
-            delay = random.randint(3000, 5000) / 1000.0 
+            delay = random.randint(minsleep, maxsleep) / 1000.0 
             await asyncio.sleep(delay)  
             async with session.get(url) as response:
                 if response.status == 200:
@@ -138,8 +142,7 @@ async def stt_as(start_=10000, end_=911218):
                     await f.write(f"\n{curlink}")#execute python pex.py dlpost for each curlink
                     if willdlforumpost:
                         # await asyncio.create_subprocess_exec("python", "pex.py", "dlpost_force200", curlink)
-                        
-                        delay = random.randint(500, 2000) / 1000.0
+                        delay = random.randint(minsleep, maxsleep) / 1000.0
                         await asyncio.sleep(delay)
                         await pex.pex_fetch_allpages(curlink)
                 # else: 

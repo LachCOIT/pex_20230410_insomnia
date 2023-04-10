@@ -65,6 +65,10 @@ _catdir  = "cat"
 _postsdir = "posts"
 _usersdir = "users"
 
+
+minsleep = 1500
+maxsleep = 4000
+
 http_headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
     "Accept-Language": "en-US,en;q=0.5"
@@ -365,7 +369,6 @@ async def pex_fetch_singlefile(session, url, i=1):
                         return html
 
                     return html
-
 async def fetch(session, url):
     if mustforce200:
         url_get_maxretries_nu = url_get_maxretries * 5
@@ -374,7 +377,7 @@ async def fetch(session, url):
     retry = 0
     async with aiohttp.ClientSession() as session:
         while retry < url_get_maxretries_nu:
-            delay = random.randint(1500, 4000) / 1000.0 
+            delay = random.randint(minsleep, maxsleep) / 1000.0 
             await asyncio.sleep(delay)  
             # Make 5 requests at the same time
             responses = await asyncio.gather(*[session.get(url) for _ in range(howmanyfetches)])
