@@ -407,8 +407,6 @@ async def __main_dl__():
         
         num_processes = 10
         await main(URL_)
-        # loop = asyncio.get_event_loop()
-        # loop.run_until_complete(main(URL_))
     except KeyboardInterrupt:
         print("Program interrupted by user!")
         sys.exit()
@@ -418,22 +416,16 @@ mustforce200 = True
 _create_dirs()
 if __name__ == "__main__":
     if sys.argv[1] == "dlpost":
-        # asyncio.run(__main_dl__)
-        # await __main_dl__()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(__main_dl__())
     elif sys.argv[1] == "dlpost_force":
         mustforcedl = True
-        # asyncio.run(__main_dl__)
-        # await __main_dl__()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(__main_dl__())
     elif sys.argv[1] == "dlpost_force200":
         mustforcedl = True
         mustforce200 = True
         print("INIT PEX_09")
-        # asyncio.run(__main_dl__)
-        # await __main_dl__()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(__main_dl__())
     exit()
