@@ -27,6 +27,28 @@ urlspumped = 10
 howmanyfetches = 5
 semaphore_num = 5
 url_get_maxretries = 5 * howmanyfetches
+
+willdlcat = False
+
+def pex_cat_url(url):
+    pattern = r'https://pinoyexchange.com/categories/(?P<id>[^/]+)(?:/p(?P<curpgnum>\d+))?'
+    match = re.match(pattern, url)
+    if not match:
+        return {}
+    return match.groupdict()
+
+def pex_cat_fileid(url):
+    dict_ = pex_cat_url(url)
+    try:
+        if dict_['curpgnum']:
+            cpgnum = str(dict_['curpgnum'])
+        else :
+            cpgnum = "1"
+    except:
+        cpgnum = str(1)
+    catid = str(dict_['id'])
+    return f'{catid}_{cpgnum:0>6}'
+
 async def process_url(url):
     _CURRENTURL = remove_url_hash(url)
     result = await asyncio.to_thread(await pex_fetch_allpages, _CURRENTURL)
@@ -51,6 +73,10 @@ _catdir  = "cat"
 
 _postsdir = "posts"
 _usersdir = "users"
+
+
+if willdlcat:
+    _postsdir = _catdir
 
 http_headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
@@ -90,6 +116,8 @@ def get_pex_id(url):
         return False
 
 async def get_pex_fileid(url,no_page_str=False):
+    if willdlcat:
+        return pex_cat_fileid(url)
     # Call get_pex_id() function to get the discussion ID, title, and page number
     pex_info = get_pex_id(url)
     pagenum_length_lpad = 5 
@@ -139,7 +167,7 @@ def url_get(url):
 async def pex_fetch_file(url,forceDL=False):
     forceDL = mustforcedl if mustforcedl is True else forceDL
     pex_fileid = await get_pex_fileid(url)
-    temp_pex_data = f'{_tempdir}/posts/{pex_fileid}'
+    temp_pex_data = f'{_tempdir}/{_postsdir}/{pex_fileid}'
     if os.path.isfile(temp_pex_data) and forceDL is False:
         print(f"{pex_fileid} :  FILE EXIST. - {temp_pex_data}")
         async with aiofiles.open(temp_pex_data, 'rb') as f:
@@ -407,8 +435,6 @@ async def __main_dl__():
         
         num_processes = 10
         await main(URL_)
-        # loop = asyncio.get_event_loop()
-        # loop.run_until_complete(main(URL_))
     except KeyboardInterrupt:
         print("Program interrupted by user!")
         sys.exit()
@@ -418,22 +444,18 @@ mustforce200 = True
 _create_dirs()
 if __name__ == "__main__":
     if sys.argv[1] == "dlpost":
-        # asyncio.run(__main_dl__)
-        # await __main_dl__()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(__main_dl__())
     elif sys.argv[1] == "dlpost_force":
         mustforcedl = True
-        # asyncio.run(__main_dl__)
-        # await __main_dl__()
         loop = asyncio.get_event_loop()
         loop.run_until_complete(__main_dl__())
     elif sys.argv[1] == "dlpost_force200":
         mustforcedl = True
         mustforce200 = True
         print("INIT PEX_09")
-        # asyncio.run(__main_dl__)
-        # await __main_dl__()
+    elif sys.argv[1] == "dlcat":
+        willdlcat = True        
         loop = asyncio.get_event_loop()
         loop.run_until_complete(__main_dl__())
     exit()
