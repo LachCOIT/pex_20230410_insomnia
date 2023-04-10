@@ -55,15 +55,6 @@ async def process_url(url):
     return result
 
 def remove_url_hash(url):
-    """
-    Removes any hash string at the end of a URL using regex.
-
-    Args:
-        url (str): The URL to modify.
-
-    Returns:
-        str: The modified URL with any hash string removed.
-    """
     return re.sub(r'#.*$', '', url)
 
 cookies = ("cookies.txt")
@@ -73,10 +64,6 @@ _catdir  = "cat"
 
 _postsdir = "posts"
 _usersdir = "users"
-
-
-if willdlcat:
-    _postsdir = _catdir
 
 http_headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
@@ -167,7 +154,12 @@ def url_get(url):
 async def pex_fetch_file(url,forceDL=False):
     forceDL = mustforcedl if mustforcedl is True else forceDL
     pex_fileid = await get_pex_fileid(url)
-    temp_pex_data = f'{_tempdir}/{_postsdir}/{pex_fileid}'
+    
+    if willdlcat:
+        temp_pex_data = f'{_tempdir}/{_catdir}/{pex_fileid}'
+    else:
+        temp_pex_data = f'{_tempdir}/{_postsdir}/{pex_fileid}'
+    
     if os.path.isfile(temp_pex_data) and forceDL is False:
         print(f"{pex_fileid} :  FILE EXIST. - {temp_pex_data}")
         async with aiofiles.open(temp_pex_data, 'rb') as f:
@@ -382,6 +374,8 @@ async def fetch(session, url):
     retry = 0
     async with aiohttp.ClientSession() as session:
         while retry < url_get_maxretries_nu:
+            delay = random.randint(1500, 4000) / 1000.0 
+            await asyncio.sleep(delay)  
             # Make 5 requests at the same time
             responses = await asyncio.gather(*[session.get(url) for _ in range(howmanyfetches)])
             for response in responses:
