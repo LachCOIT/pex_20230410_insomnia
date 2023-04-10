@@ -82,6 +82,11 @@ async def url_get(url):
                     return response.status
     return None
 
+async def dlpexurl(url):
+    if willdlforumpost:
+        delay = random.randint(minsleep, maxsleep) / 1000.0
+        await asyncio.sleep(delay)
+        await pex.pex_fetch_allpages(url)
 
 async def get_link_next(url):
     response = await url_get(url)
@@ -91,20 +96,20 @@ async def get_link_next(url):
     elif response is not None:
         # Parse the HTML content using BeautifulSoup
         soup = BeautifulSoup(response, "html.parser")
-
+        thelink = False
         # Find the <link> tag with "prev" relationship
         prev_link = soup.find("link", rel="prev")
-
         # Extract the URL of the previous page
         if prev_link:
-            prev_url = prev_link.get("href")
-            # print("Previous URL:", prev_url)
-            return prev_url
-
-        else:            
+            thelink = prev_link.get("href") 
+        else:
             canon_link = soup.find("link", rel="canonical")
             if canon_link:
-                    return canon_link.get("href")
+                    thelink = canon_link.get("href")
+        if thelink:
+            await dlpexurl(thelink)
+            return thelink
+                    
 
         return f'https://www.pinoyexchange.com/discussion/{pex_geturlid(url)+1}/'
     return f'https://www.pinoyexchange.com/discussion/{pex_geturlid(url)+1}/'
@@ -140,11 +145,6 @@ async def stt_as(start_=10000, end_=911218):
                     print(curlink)
                     # await f.write(text)
                     await f.write(f"\n{curlink}")#execute python pex.py dlpost for each curlink
-                    if willdlforumpost:
-                        # await asyncio.create_subprocess_exec("python", "pex.py", "dlpost_force200", curlink)
-                        delay = random.randint(minsleep, maxsleep) / 1000.0
-                        await asyncio.sleep(delay)
-                        await pex.pex_fetch_allpages(curlink)
                 # else: 
         tasks.clear()
 
