@@ -29,11 +29,11 @@ semaphore_num = 5
 url_get_maxretries = 5 * howmanyfetches
 
 
-minsleep = 1500
-maxsleep = 2000
+minsleep = 500
+maxsleep = 1000
 
-minsleep_get_url = 1500
-maxsleep_get_url = 3500
+minsleep_get_url = 500
+maxsleep_get_url = 1500
 
 def checkifempty_url(url):
     # Define regular expression pattern
@@ -88,8 +88,8 @@ async def url_get(url):
 
 async def dlpexurl(url):
     if willdlforumpost:
-        delay = random.randint(minsleep, maxsleep) / 1000.0
-        await asyncio.sleep(delay)
+        # delay = random.randint(minsleep, maxsleep) / 1000.0
+        # await asyncio.sleep(delay)
         await pex.pex_fetch_allpages(url)
 
 async def get_link_next(url):

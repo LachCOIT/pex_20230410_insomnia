@@ -30,6 +30,27 @@ url_get_maxretries = 5 * howmanyfetches
 
 willdlcat = False
 
+
+cookies = ("cookies.txt")
+_tempdir = "tmp"
+_datadir = "dat"
+_catdir  = "cat"
+
+_postsdir = "posts"
+_usersdir = "users"
+
+
+minsleep = 500
+maxsleep = 1000
+
+minsleep_get_url = 500
+maxsleep_get_url = 1500
+
+http_headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    "Accept-Language": "en-US,en;q=0.5"
+}
+
 def pex_cat_url(url):
     pattern = r'https://pinoyexchange.com/categories/(?P<id>[^/]+)(?:/p(?P<curpgnum>\d+))?'
     match = re.match(pattern, url)
@@ -57,25 +78,6 @@ async def process_url(url):
 def remove_url_hash(url):
     return re.sub(r'#.*$', '', url)
 
-cookies = ("cookies.txt")
-_tempdir = "tmp"
-_datadir = "dat"
-_catdir  = "cat"
-
-_postsdir = "posts"
-_usersdir = "users"
-
-minsleep = 1500
-maxsleep = 2000
-
-
-minsleep_get_url = 1500
-maxsleep_get_url = 3500
-
-http_headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-    "Accept-Language": "en-US,en;q=0.5"
-}
 
 def pex_remove_page_string(url):
     return re.sub(r"/p\d+", "", url)
